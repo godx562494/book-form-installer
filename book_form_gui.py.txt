@@ -1,0 +1,77 @@
+import tkinter as tk
+from tkinter import messagebox
+from docx import Document
+
+def to_thai_number(n):
+    return ''.join('๐๑๒๓๔๕๖๗๘๙'[int(ch)] if ch.isdigit() else ch for ch in str(n))
+
+def generate_doc():
+    name = entry_name.get()
+    address = entry_address.get()
+    request_date = entry_request_date.get()
+    delivery_dates = entry_delivery_dates.get()
+    trips = entry_trips.get()
+    volume = entry_volume.get()
+
+    if not all([name, address, request_date, delivery_dates, trips, volume]):
+        messagebox.showerror("ข้อผิดพลาด", "กรุณากรอกข้อมูลให้ครบทุกช่อง")
+        return
+
+    doc = Document()
+    doc.add_heading('บันทึกข้อความ', 0)
+
+    doc.add_paragraph(
+        "ส่วนราชการงานป้องกันและบรรเทาสาธารณภัย สำนักปลัด เทศบาลตำบลหนองแวงแก้มหอม\n"
+        "ที่อด ๗๙๘๐๑/                 วันที่  23 มิถุนายน พ.ศ. ๒๕๖๘"
+    )
+    doc.add_paragraph("เรื่อง\tรายงานผลดำเนินงานส่งน้ำเพื่ออุปโภค-บริโภค")
+    doc.add_paragraph("เรียน\tนายกเทศมนตรีตำบลหนองแวงแก้มหอม")
+
+    doc.add_paragraph(
+        f"\t๑.เรื่องเดิม\n\tตามที่งานป้องกันและบรรเทาสาธารณภัย สำนักปลัด เทศบาลตำบลหนองแวงแก้มหอมได้รับคำร้องขอสนับสนุนน้ำเพื่ออุปโภค-บริโภค จาก{name} "
+        f"เมื่อวันที่ {request_date} {address} เพื่อใช้อุปโภคในครัวเรือน นั้น")
+
+    doc.add_paragraph(
+        f"\t๒.ข้อเท็จจริง\n\tได้ดำเนินการแจกจ่ายน้ำเพื่ออุปโภค-บริโภคในวันที่ {delivery_dates} รวมทั้งหมด {to_thai_number(trips)} เที่ยวรถ "
+        f"จำนวน {to_thai_number(volume)} ลิตร เป็นที่เรียบร้อยแล้ว (รายละเอียดปรากฏตามเอกสารแนบท้ายมาพร้อมนี้)")
+
+    doc.add_paragraph(
+        "\t๓. ข้อระเบียบกฎหมายที่เกี่ยวข้อง\n\t๓.๑ พระราชบัญญัติเทศบาล พ.ศ. ๒๔๙๖ (แก้ไขเพิ่มเติมฉบับที่ ๑๔)พ.ศ. ๒๕๖๒\n\t๓.๒ พระราชบัญญัติป้องกันและบรรเทาสาธารณภัย พ.ศ. ๒๕๕๐")
+
+    doc.add_paragraph("\t๔. ข้อเสนอเพื่อพิจารณา\n\tจึงเรียนมาเพื่อโปรดทราบ\n\n\t\t\t\t\t\t(ลงชื่อ)\n\t\t\t(นายกิตติศักดิ์ มูลตา)\n\t\t\tพนักงานจ้างทั่วไป")
+
+    doc.save("หนังสือราชการ.docx")
+    messagebox.showinfo("สำเร็จ", "สร้างไฟล์ 'หนังสือราชการ.docx' สำเร็จแล้ว!")
+
+root = tk.Tk()
+root.title("สร้างหนังสือราชการ")
+root.geometry("500x400")
+
+fields = [
+    ("ชื่อผู้ร้องขอ", "entry_name"),
+    ("ที่อยู่", "entry_address"),
+    ("วันที่ร้องขอ (6 มิ.ย. 2568)", "entry_request_date"),
+    ("วันที่แจกจ่าย (7,8,9 มิ.ย.)", "entry_delivery_dates"),
+    ("จำนวนเที่ยวรถ", "entry_trips"),
+    ("จำนวนลิตร", "entry_volume")
+]
+
+entries = {}
+for i, (label_text, var_name) in enumerate(fields):
+    label = tk.Label(root, text=label_text)
+    label.grid(row=i, column=0, sticky='e', padx=10, pady=5)
+    entry = tk.Entry(root, width=40)
+    entry.grid(row=i, column=1, pady=5)
+    entries[var_name] = entry
+
+entry_name = entries["entry_name"]
+entry_address = entries["entry_address"]
+entry_request_date = entries["entry_request_date"]
+entry_delivery_dates = entries["entry_delivery_dates"]
+entry_trips = entries["entry_trips"]
+entry_volume = entries["entry_volume"]
+
+submit_btn = tk.Button(root, text="สร้างหนังสือราชการ", command=generate_doc)
+submit_btn.grid(row=len(fields), column=0, columnspan=2, pady=20)
+
+root.mainloop()
