@@ -1,0 +1,16 @@
+[Setup]
+AppName=โปรแกรมสร้างหนังสือราชการ
+AppVersion=1.0
+DefaultDirName={pf}\ราชการ
+DefaultGroupName=ราชการ
+OutputDir=output
+OutputBaseFilename=Setup_ราชการ
+Compression=lzma
+SolidCompression=yes
+
+[Files]
+Source: "dist\\book_form_gui.exe"; DestDir: "{app}"; Flags: ignoreversion
+
+[Icons]
+Name: "{group}\\โปรแกรมสร้างหนังสือราชการ"; Filename: "{app}\\book_form_gui.exe"
+Name: "{group}\\ถอนการติดตั้ง"; Filename: "{uninstallexe}"
